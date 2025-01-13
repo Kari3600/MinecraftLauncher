@@ -14,4 +14,8 @@ public class Version {
         this.time = time;
         this.releaseTime = releaseTime;
     }
+    @Override
+    public String toString() {
+        return id;
+    }
 }

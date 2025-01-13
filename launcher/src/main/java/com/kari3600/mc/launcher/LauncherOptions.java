@@ -26,6 +26,7 @@ public class LauncherOptions {
     static {
         try {
             File optionsFile = new File(settings,"launcher_options.json");
+            optionsFile.getParentFile().mkdirs();
             if (optionsFile.createNewFile()) {
                 instance = new LauncherOptions();
                 instance.synchronize();
@@ -82,7 +83,7 @@ public class LauncherOptions {
         if (!versionFile.exists()) {
             System.out.println("File does not exist, downloading...");
             try {
-                versionSpecification.downloads.client.download(versionFile.toPath());
+                versionSpecification.downloads.client.download(versionFile);
             } catch (Exception e) {
                 System.out.println("Launch failed, aborting");
                 e.printStackTrace();
@@ -146,9 +147,14 @@ public class LauncherOptions {
         ).collect(Collectors.toList());
         System.out.println(String.join(" ",command));
         ProcessBuilder processBuilder = new ProcessBuilder(command);
+        File outfile = new File(logs,"output.txt");
+        File errfile = new File(logs,"error.txt");
+        logs.mkdirs();
         try {
-            processBuilder.redirectOutput(new File(logs,"output.txt"));
-            processBuilder.redirectError(new File(logs,"error.txt"));
+            outfile.createNewFile();
+            errfile.createNewFile();
+            processBuilder.redirectOutput(outfile);
+            processBuilder.redirectError(errfile);
             processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();

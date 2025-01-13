@@ -28,7 +28,7 @@ public class Library {
         if (!libFile.exists()) {
             System.out.println("File does not exist, downloading...");
             try {
-                fileInfo.download(libFile.toPath());
+                fileInfo.download(libFile);
             } catch (Exception e) {
                 System.out.println("Launch failed, aborting");
                 e.printStackTrace();
