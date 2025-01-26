@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Example Player One",
+    "uuid": "d8b8b9a2-6e5f-45cf-b72d-e42d1e7b84ab",
+    "accessToken": "offline"
+  },
+  {
+    "name": "Example Player Two",
+    "uuid": "f3a9057e-8b99-4b3e-98d1-4cfbc6cb1186",
+    "accessToken": "offline"
+  },
+  {
+    "name": "Example Player Three",
+    "uuid": "f9b1b44d-54f4-4cfd-87ac-c7526f9cfe12",
+    "accessToken": "offline"
+  }
+]
