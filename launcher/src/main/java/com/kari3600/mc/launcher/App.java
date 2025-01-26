@@ -4,9 +4,34 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.*;
-import javax.swing.*;
-import java.util.List;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.Image;
+import java.awt.Graphics;
+import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import java.awt.Component;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JTextField;
+import javax.swing.JList;
+import javax.swing.Box;
+
+// import java.awt.*;
+// import javax.swing.*;
 
 public class App extends JFrame {
     public static void main(String[] args) {
@@ -45,11 +70,11 @@ public class App extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create a panel with FlowLayout to center the versionComboBox
+        // Panel with FlowLayout to center the versionComboBox
         JPanel versionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         versionPanel.setOpaque(false);
 
-        // Create the combo box for versions
+        // Combo box for versions
         JComboBox<String> versionComboBox = new JComboBox<>(versionList.versions.stream()
             .filter(v -> v.type == Version.VersionType.release)
             .map(v -> v.id)
@@ -79,7 +104,33 @@ public class App extends JFrame {
         versionComboBox.setSelectedItem(launcherOptions.getVersionID());
         versionPanel.add(versionComboBox);
 
-        // Create a panel with FlowLayout to center the launchButton
+        // JTextField with placeholder
+        JTextField textField = new JTextField(32);
+        String placeholder = "nick";
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+        textField.setMaximumSize(new Dimension(200, 25));
+
+        // FocusListener to manage placeholder behavior
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        // Panel with FlowLayout to center the launchButton
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setOpaque(false);
 
@@ -96,7 +147,7 @@ public class App extends JFrame {
         });
         buttonPanel.add(launchButton);
 
-        // Create a JPanel to hold player profiles and add them dynamically
+        // JPanel to hold player profiles and add them dynamically
         JPanel playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS)); // BoxLayout for vertical arrangement
         playerPanel.setBackground(Color.WHITE);
@@ -106,45 +157,45 @@ public class App extends JFrame {
         Image scaledImage = userIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         userIcon = new ImageIcon(scaledImage);
 
-        // Add each player profile to the playerPanel
+        // Player profile to the playerPanel
         for (PlayerProfile profile : PlayerProfile.profiles) {
-            // Create a panel for each player's profile
+            // Panel for each player's profile
             JPanel profilePanel = new JPanel();
             profilePanel.setLayout(new BorderLayout());
             profilePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             profilePanel.setBackground(new Color(245, 245, 245));
             profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-            // Create a label for the player's name
+            // Label for the player's name
             JLabel nameLabel = new JLabel(profile.getName());
             nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
             nameLabel.setForeground(Color.BLACK);
 
-            // Create a label for the player's status (online/offline)
+            // Label for the player's status (online/offline)
             JLabel statusLabel = new JLabel(profile.getAccessToken());
             statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
             statusLabel.setForeground(profile.getAccessToken().equalsIgnoreCase("online") 
                                         ? new Color(34, 139, 34)
                                         : new Color(178, 34, 34));
 
-            // Create a label for the default player icon
+            // Label for the default player icon
             JLabel iconLabel = new JLabel(userIcon);
             iconLabel.setPreferredSize(new Dimension(55, 40));
             iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-            // Create a panel to hold name and status together (right side)
+            // Panel to hold name and status together (right side)
             JPanel nameAndStatusPanel = new JPanel();
             nameAndStatusPanel.setLayout(new BoxLayout(nameAndStatusPanel, BoxLayout.Y_AXIS));
             nameAndStatusPanel.setBackground(new Color(245, 245, 245));
             nameAndStatusPanel.add(nameLabel);
             nameAndStatusPanel.add(statusLabel);
 
-            // Add the icon and the name/status panel to the profile panel
+            // Icon and the name/status panel to the profile panel
             profilePanel.add(iconLabel, BorderLayout.WEST);
             profilePanel.add(nameAndStatusPanel, BorderLayout.CENTER);
             iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 15));
 
-            // Add a hover effect to the profile panel
+            // Hover effect to the profile panel
             profilePanel.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -181,25 +232,27 @@ public class App extends JFrame {
         containerPanel.setPreferredSize(new Dimension(containerPanel.getPreferredSize().width, 50));
         containerPanel.setOpaque(false);
 
-        // Add the labelPanel (with playerProfilesLabel) at the top of containerPanel
+        // labelPanel (with playerProfilesLabel) at the top of containerPanel
         containerPanel.add(labelPanel);
 
-        // Add the playerScrollPane (with profiles) just below the labelPanel in containerPanel
+        // playerScrollPane (with profiles) just below the labelPanel in containerPanel
         containerPanel.add(playerScrollPane);
 
-        // Finally, add the containerPanel to your main panel
+        // All elements added to paenl
         panel.add(Box.createVerticalGlue());
         panel.add(versionPanel);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(textField);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(buttonPanel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(containerPanel); // This adds the label and the scroll pane together
         panel.add(Box.createVerticalGlue());
 
-        // Add the main panel to the JFrame
+        // Main panel to the JFrame
         add(panel);
 
-        // Set the frame to visible
+        // Frame to visible
         setVisible(true);
     }
 }
